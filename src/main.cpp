@@ -1,6 +1,14 @@
 #include "tetris.hpp"
-#ifndef _WIN32
+
+// Use proper conditional compilation for platform-specific code
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <SDL2/SDL.h>
+// Dummy definition for WINAPI on non-Windows platforms
+#define WINAPI
+typedef void* HINSTANCE;
+typedef char* LPSTR;
 #endif
 
 /*
@@ -8,7 +16,7 @@
 Main
 ==================
 */
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow){
+int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     // —– Vars —–
 
     // Class for drawing staff, it uses SDL for the rendering. Change the methods of this class
@@ -27,102 +35,103 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
     // Get the actual clock milliseconds (SDL)
     unsigned long mTime1 = SDL_GetTicks();
+    
     // —– Main Loop —–
-
     while (!mIO.IsKeyDown (SDLK_ESCAPE))
     {
-    // —– Draw —–
+        // —– Draw —–
+        mIO.ClearScreen (); // Clear screen
+        mGame.DrawScene (); // Draw staff
+        mIO.UpdateScreen (); // Put the graphic context in the screen
 
-    mIO.ClearScreen (); // Clear screen
-    mGame.DrawScene (); // Draw staff
-    mIO.UpdateScreen (); // Put the graphic context in the screen
-    [/c]
+        // —– Input —–
+        int mKey = mIO.Pollkey();
 
-    We start with the input. If we press left, down or right we try to move the piece in that directions. We only move the piece if the movement is possible.
+        switch (mKey)
+        {
+        case (SDLK_RIGHT):
+        {
+            if (mBoard.IsPossibleMovement (mGame.mPosX + 1, mGame.mPosY, mGame.mPiece, mGame.mRotation))
+                mGame.mPosX++;
+            break;
+        }
 
-    [c language=»++»]
-    // —– Input —–
+        case (SDLK_LEFT):
+        {
+            if (mBoard.IsPossibleMovement (mGame.mPosX - 1, mGame.mPosY, mGame.mPiece, mGame.mRotation))
+                mGame.mPosX--;
+            break;
+        }
 
-    int mKey = mIO.Pollkey();
+        case (SDLK_DOWN):
+        {
+            if (mBoard.IsPossibleMovement (mGame.mPosX, mGame.mPosY + 1, mGame.mPiece, mGame.mRotation))
+                mGame.mPosY++;
+            break;
+        }
+        case (SDLK_x):
+        {
+            // Check collision from up to down
+            while (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY, mGame.mPiece, mGame.mRotation)) { mGame.mPosY++; }
 
-    switch (mKey)
-    {
-    case (SDLK_RIGHT):
-    {
-    if (mBoard.IsPossibleMovement (mGame.mPosX + 1, mGame.mPosY, mGame.mPiece, mGame.mRotation))
-    mGame.mPosX++;
-    break;
-    }
+            mBoard.StorePiece (mGame.mPosX, mGame.mPosY - 1, mGame.mPiece, mGame.mRotation);
 
-    case (SDLK_LEFT):
-    {
-    if (mBoard.IsPossibleMovement (mGame.mPosX – 1, mGame.mPosY, mGame.mPiece, mGame.mRotation))
-    mGame.mPosX–;
-    break;
-    }
+            mBoard.DeletePossibleLines ();
 
-    case (SDLK_DOWN):
-    {
-    if (mBoard.IsPossibleMovement (mGame.mPosX, mGame.mPosY + 1, mGame.mPiece, mGame.mRotation))
-    mGame.mPosY++;
-    break;
-    }
-    case (SDLK_x):
-    {
-    // Check collision from up to down
-    while (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY, mGame.mPiece, mGame.mRotation)) { mGame.mPosY++; }
+            if (mBoard.IsGameOver())
+            {
+                mIO.Getkey();
+                exit(0);
+            }
 
-    mBoard.StorePiece (mGame.mPosX, mGame.mPosY – 1, mGame.mPiece, mGame.mRotation);
+            mGame.CreateNewPiece();
 
-    mBoard.DeletePossibleLines ();
+            break;
+        }
+        case (SDLK_z):
+        {
+            if (mBoard.IsPossibleMovement (mGame.mPosX, mGame.mPosY, mGame.mPiece, (mGame.mRotation + 1) % 4))
+                mGame.mRotation = (mGame.mRotation + 1) % 4;
 
-    if (mBoard.IsGameOver())
-    {
-    mIO.Getkey();
-    exit(0);
-    }
+            break;
+        }
+        }
 
-    mGame.CreateNewPiece();
+        // —– Vertical movement —–
+        unsigned long mTime2 = SDL_GetTicks();
 
-    break;
-    }
-    case (SDLK_z):
-    {
-    if (mBoard.IsPossibleMovement (mGame.mPosX, mGame.mPosY, mGame.mPiece, (mGame.mRotation + 1) % 4))
-    mGame.mRotation = (mGame.mRotation + 1) % 4;
+        if ((mTime2 - mTime1) > WAIT_TIME)
+        {
+            if (mBoard.IsPossibleMovement (mGame.mPosX, mGame.mPosY + 1, mGame.mPiece, mGame.mRotation))
+            {
+                mGame.mPosY++;
+            }
+            else
+            {
+                mBoard.StorePiece (mGame.mPosX, mGame.mPosY, mGame.mPiece, mGame.mRotation);
 
-    break;
-    }
-    }
+                mBoard.DeletePossibleLines ();
 
-    // —– Vertical movement —–
+                if (mBoard.IsGameOver())
+                {
+                    mIO.Getkey();
+                    exit(0);
+                }
 
-    unsigned long mTime2 = SDL_GetTicks();
+                mGame.CreateNewPiece();
+            }
 
-    if ((mTime2 – mTime1) > WAIT_TIME)
-    {
-    if (mBoard.IsPossibleMovement (mGame.mPosX, mGame.mPosY + 1, mGame.mPiece, mGame.mRotation))
-    {
-    mGame.mPosY++;
-    }
-    else
-    {
-    mBoard.StorePiece (mGame.mPosX, mGame.mPosY, mGame.mPiece, mGame.mRotation);
-
-    mBoard.DeletePossibleLines ();
-
-    if (mBoard.IsGameOver())
-    {
-    mIO.Getkey();
-    exit(0);
-    }
-
-    mGame.CreateNewPiece();
-    }
-
-    mTime1 = SDL_GetTicks();
-    }
+            mTime1 = SDL_GetTicks();
+        }
     }
 
     return 0;
 }
+
+#ifndef _WIN32
+// Linux main entry point
+int main(int argc, char* argv[]) {
+    // Forward to WinMain
+    return WinMain(NULL, NULL, NULL, 0);
+}
+#endif

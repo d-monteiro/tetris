@@ -1,5 +1,15 @@
 #include "tetris.hpp"
 
+Game::Game(Board *pBoard, Pieces *pPieces, IO *pIO, int pScreenHeight) {
+    mBoard = pBoard;
+    mPieces = pPieces;
+    mIO = pIO;
+    mScreenHeight = pScreenHeight;
+    
+    // Initialize game
+    InitGame();
+}
+
 int Game::GetRand (int pA, int pB){
     return rand () % (pB - pA + 1) + pA;
 }

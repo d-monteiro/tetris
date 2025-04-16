@@ -1,14 +1,14 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude -lSDL2_gfx -lSDL2
-LDFLAGS = -lSDL -lSDL_gfx
+CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude
+LDFLAGS = -lSDL2 -lSDL2_gfx
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:src/%.cpp=build/%.o)
-TARGET = build/main
+TARGET = build/tetris
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CXX) $(OBJ) -o $@
+	$(CXX) $(OBJ) -o $@ $(LDFLAGS)
 
 build/%.o: src/%.cpp
 	mkdir -p build
@@ -16,3 +16,5 @@ build/%.o: src/%.cpp
 
 clean:
 	rm -rf build/*
+
+.PHONY: all clean

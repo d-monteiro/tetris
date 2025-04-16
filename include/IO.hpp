@@ -2,15 +2,15 @@
 #define _IO_
 
 // —— Includes —–
-
+#ifdef _WIN32
 #include "SDL/SDL.h"
 //#include "SDL/SDL_gfxPrimitives.h"
-
-//#pragma comment (lib, "SDL/lib/SDL.lib")
-//#pragma comment (lib, "SDL/SDL_GfxPrimitives/SDL_GfxPrimitives_Static.lib")
+#else
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+#endif
 
 // —— Enums —–
-
 enum color {BLACK, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, WHITE, COLOR_MAX}; // Colors
 
 // ——————————————————————————–
