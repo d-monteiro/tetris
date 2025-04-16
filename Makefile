@@ -5,7 +5,7 @@ SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:src/%.cpp=build/%.o)
 TARGET = build/tetris
 
-all: $(TARGET)
+all: clean $(TARGET)
 
 $(TARGET): $(OBJ)
 	$(CXX) $(OBJ) -o $@ $(LDFLAGS)
@@ -16,5 +16,11 @@ build/%.o: src/%.cpp
 
 clean:
 	rm -rf build/*
+
+clear:
+	rm -rf build/*
+
+run:
+	./build/tetris
 
 .PHONY: all clean

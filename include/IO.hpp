@@ -31,6 +31,8 @@ int Pollkey ();
 int Getkey ();
 int IsKeyDown (int pKey);
 void UpdateScreen ();
+bool IsWindowClosed();
+
 
 };
 

@@ -37,7 +37,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     unsigned long mTime1 = SDL_GetTicks();
     
     // —– Main Loop —–
-    while (!mIO.IsKeyDown (SDLK_ESCAPE))
+    while (!mIO.IsKeyDown (SDLK_ESCAPE) && !mIO.IsWindowClosed())
     {
         // —– Draw —–
         mIO.ClearScreen (); // Clear screen
@@ -123,6 +123,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
             mTime1 = SDL_GetTicks();
         }
+
+        if(mIO.IsWindowClosed()) exit(0);
     }
 
     return 0;

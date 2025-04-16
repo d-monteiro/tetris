@@ -9,9 +9,14 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 static SDL_Event event;
+static bool windowClosed = false;
 
 IO::IO() {
     InitGraph();
+}
+
+bool IO::IsWindowClosed() {
+    return windowClosed;
 }
 
 int IO::InitGraph() {
@@ -89,6 +94,9 @@ int IO::Pollkey() {
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_KEYDOWN)
             return event.key.keysym.sym;
+        if (event.type == SDL_QUIT) {
+            windowClosed = true;
+        }
     }
     return -1;
 }
