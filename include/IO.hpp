@@ -4,7 +4,7 @@
 // —— Includes —–
 #ifdef _WIN32
 #include "SDL/SDL.h"
-//#include "SDL/SDL_gfxPrimitives.h"
+ #include "SDL/SDL_gfxPrimitives.h"
 #else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>

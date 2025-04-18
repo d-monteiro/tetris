@@ -2,6 +2,8 @@
 
 This is a simple Tetris game implemented in C++ using SDL for graphics and input handling.
 
+![Tetris Image](image.png)
+
 ## About
 
 This project was inspired by a tutorial I saw on the web. The code structure, logic, and some implementation details are based on the concepts and examples provided in that tutorial, with some customizations and improvements.
@@ -18,7 +20,7 @@ This project was inspired by a tutorial I saw on the web. The code structure, lo
 1. **Install dependencies** (on Ubuntu):
 
    ```sh
-   sudo apt-get install libsdl1.2-dev libsdl-gfx1.2-dev
+   sudo apt-get install libsdl2-dev libsdl2-gfx-dev
    ```
 
 2. **Build the project:**

@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Tetris Build
 
 on:
   push:
@@ -12,15 +12,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Install build dependencies
-      run: sudo apt-get install -y libsdl1.2-dev libsdl-gfx1.2-dev
-    - name: Generate configure script
-      run: autoreconf -i
-    - name: Configure
-      run: ./configure
-    - name: Build
+      name: Checkout code
+      
+    - name: Install SDL2 dependencies
+      run: sudo apt-get install -y libsdl2-dev libsdl2-gfx-dev
+      
+    - name: Build using Makefile
       run: make
-    - name: Run Tests
-      run: make check
-    - name: Perform Distribution Check
-      run: make distcheck
+      
+    - name: Verify executable was created
+      run: ls -la build/tetris
