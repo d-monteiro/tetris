@@ -1,4 +1,4 @@
-name: Tetris Build
+name: Tetris Build and Test
 
 on:
   push:
@@ -19,6 +19,9 @@ jobs:
       
     - name: Build using Makefile
       run: make
+      
+    - name: Run tests
+      run: make check
       
     - name: Verify executable was created
       run: ls -la build/tetris
